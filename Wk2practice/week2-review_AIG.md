@@ -201,7 +201,7 @@ Elasticity- Being able to anticipate or respond dynamically to increased or decr
 Resiliency-
  
 * Ways of paying for EC2?
--On deman, savings plans, reserved intances, spot instances
+-On demand, savings plans
 
 ### RDS
 
@@ -220,7 +220,7 @@ MySql, PostgreSQL, Oracle, Amazon
 
 #!/bin/bash
 
-ssh -i
+ssh -i [file.pem] ec2-user@[address]
 sudo yum update -y
 sudo yum install git
 sudo yum install java-1.8.0-openjdk-devel -y
