@@ -3,21 +3,37 @@
 ### Relations
 
 * Explain what SQL is. What are some SQL databases?
-
+Structured Query Langauge, it provides us a way to interact with data entities
 * How is data structured in a SQL database?
-
+Structured based on schemas. Which are the guidelines that determine how the collections of tables, views, triggers, and functions interact in your database. 
 * What is an ERD? How is it useful?
-
+An entity relationship diagram, is a type of flowchart that illustrates how entities(people, objects, concepts) relate to each other in a system. ER Diagrams are most often used to design or debug relational databases. 
+https://database.guide/wp-content/uploads/2016/06/sakila_full_database_schema_diagram.png
+https://www.lucidchart.com/pages/er-diagrams
 * What are the different multiplicity relationships? How would you create these relations?
+one-to-one: A relationship like passport identification to citizen
+row references another row
+
+one-to-many/ many-to-one: Relationship like Naruto villages, each ninja has a village, many ninja call a village home, but one village can have many ninja.
+one row in a table is referenced by potentially many rows in another table
+
+many-to-many: The relationship of movie theater chains to current movie showings.
+junction table(table that has a primary key which is a composite key of foreign key)
+several rows can be referenced by several rows in another table.
 
 * What kind of relationship would exist between Students and Classes? Students and Textbooks?
-
+Many-many, many to one
 * Explain the concept of referential integrity
+The practice that a database will always keep itself from performing outside of constraints or executing a function that 
 
 * What is a cascade delete?
-    
+a delete function that is able to delete a record and any records referencing it as well
+
 * List the integrity constraints
-    
+Domain Integrity: set of rules that restricts the kind of attributes or values a column or relation can hold in the database table. For example, we can specify if a particular column can hold null values or not, if the values have to be unique or not,
+Entity Integrity:used to ensure the uniqueness of each record or row in the data table. There are primarily two types of integrity constraints that help us in ensuring the uniqueness of each row, namely, UNIQUE constraint and PRIMARY KEY constraint.
+Referential Integrity:ensures that there always exists a valid relationship between two tables.This makes sure that if a foreign key exists in a table relationship then it should always reference a corresponding value in the second table or it should be null.
+Key Constraints:
 * Define the word "schema"
     
 * What is a candidate key? What about a surrogate key?

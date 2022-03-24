@@ -95,6 +95,7 @@ public class Driver {
 		 */
 		if(ts.addTdModels(newTdModels)) {
 			ctx.status(HttpStatus.CREATED_201);
+			ctx.result("Model added~");
 			log.info("new model added!");	
 		}else {
 			ctx.status(400);
