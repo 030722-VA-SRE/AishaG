@@ -31,37 +31,105 @@ a delete function that is able to delete a record and any records referencing it
 
 * List the integrity constraints
 Domain Integrity: set of rules that restricts the kind of attributes or values a column or relation can hold in the database table. For example, we can specify if a particular column can hold null values or not, if the values have to be unique or not,
-Entity Integrity:used to ensure the uniqueness of each record or row in the data table. There are primarily two types of integrity constraints that help us in ensuring the uniqueness of each row, namely, UNIQUE constraint and PRIMARY KEY constraint.
-Referential Integrity:ensures that there always exists a valid relationship between two tables.This makes sure that if a foreign key exists in a table relationship then it should always reference a corresponding value in the second table or it should be null.
-Key Constraints:
-* Define the word "schema"
-    
-* What is a candidate key? What about a surrogate key?
 
+Entity Integrity:used to ensure the uniqueness of each record or row in the data table. There are primarily two types of integrity constraints that help us in ensuring the uniqueness of each row, namely, UNIQUE constraint and PRIMARY KEY constraint.
+
+Referential Integrity:ensures that there always exists a valid relationship between two tables.This makes sure that if a foreign key exists in a table relationship then it should always reference a corresponding value in the second table or it should be null.
+
+Key Constraints:ensure that an entity or record is uniquely or differently identified in the database. There can be more than one key in the table but it can have only one primary key.
+Main key constraints:
+Primary Key Constraint
+Foreign Key Constraint
+Unique Key Constraint
+
+* Define the word "schema"
+    a representation of a plan or theory in the form of an outline or model(general)
+    A schema is a collection of logical structures of data, or schema objects. A schema is owned by a database user and has the same name as that user. Each user owns a single schema. Schema objects can be created and manipulated with SQL.(Data Science definition)
+
+* What is a candidate key? What about a surrogate key?
+A candidate key is the key which contains no redundant attribute, it is a subset or part of the Super key. attribute holding a candidate key can never have values that are null.
+To implement candidate key in MySQL, set more than one column as unique key. These keys would qualify for candidate key as in the below syntax 
+
+Surrogate Key:
+ synthetic primary key, is generated  when a new record is inserted into a table automatically by a database that can be declared as the primary key of that table . It is the sequential number outside of the database that is made available to the user and the application or it acts as an object that is present in the database but is not visible to the user or application.
+
+ we do not have a natural primary key in a table, then we need to artificially create one in order to uniquely identify a row in the table , this key is called the surrogate key or synthetic primary key of the table. However , surrogate key is not always the primary key 
 
 ### Sublanguages & Queries
     
 * What are the 5 sublanguages of SQL? List some commands for each
-    
+    DML(Data Manipulation Langauge): 
+    Insert: insert data into a table.
+    Update: update existing data within a table.
+    Delete: delete records from a database table.
+    DDL(Data Definition Language): 
+    Create: This command is used to create the database or its objects (like table, index, function, views, store procedure, and triggers)
+    Drop:This command is used to delete objects from the database.
+    Alter:This is used to alter the structure of the database.
+    Truncate: This is used to remove all records from a table, including all spaces allocated for the records are removed.
+    Rename: This is used to rename an object existing in the database.
+    DQL(Data Query Language): 
+        Select(used to select the attribute based on the condition described by WHERE clause.)
+    DC(Data Control Language):
+     Grant: gives users access privileges to the database. 
+     Revoke withdraws the user’s access privileges given by using the GRANT command.
+    TCL(Transaction Control Language)-deal with the transaction within the database.: 
+    Commit: Commits a Transaction.
+    Rollback: Rollbacks a transaction in case of any error occurs.
+    Savepoint:Sets a savepoint within a transaction.
+    Set Transaction: Specify characteristics for the transaction.
+
 * What is the difference between DELETE, DROP, and TRUNCATE commands?
-    
+    delete a single record, delete multiple records or tables, remove all records
 * What are some SQL clauses you can use with SELECT statements?
-   
+   select * from (table_name)
+   select id from (table_name)
+
 
 * What is the difference between joins and set operators?
+Joins are queries that can return data from two or more tables.
 
+Set operators are operators used to combine multiple queries intead of tables. 
 * What are the types of joins? Explain the differences.
+ Inner Join(Join) - a join of two or more tbales that returns ONLY the rows that satisfy the condition
  
+ Left Join- LEFT [OUTER] JOIN
+  Performs an outer join of two tables, returning all the rows from the left or "first" table queried
 
+ Right Join- RIGHT [OUTER] JOIN 
+ Performs an outer join of two tables, returning all the rows from the right or "second" table queried
+
+ Full Join FULL [OUTER] JOIN
+Performs an outer join of two tables, returning all the rows from the left and right tables
 * Explain the difference between UNION, UNION ALL, and INTERSECT
 
 ### Transactions
 
 * What are the properties a transaction must follow?
- 
+ ACID 
+ Atomicity
+ one unit, transaction should finish to completion or not at all.
+
+ Consistency
+ DB should be in a valid state before and after a transaction, in regards to the constraints and business logic
+
+ Isolation
+ a transaction should not interfere with another transaction
+ -if transactions execute concurrently they should be the same as if they occurred in order
+
+ Durability
+ Commits are final, changes should be persisted to the database
 
 * Explain the different isolation levels. What read phenomena do each prevent?
 
+Read uncommitted
+-transactions are able to read/interact with uncommitted data 
+read committed
+-only able to interact with committed data
+repeatable read
+You can only see data that has been committed before the transaction has begun(
+serializable
+-strictest level of isolation making transactions happen one after another
 ### Practicals
 
 Given the following table 'employees'...
@@ -161,9 +229,63 @@ drop table departments
 
 # JDBC
 1.	What is JDBC?
+Java Database Conectivity, Java API to connect and execute the query with the database.
+can use JDBC API to access tabular data stored in any relational database
+help of JDBC API, we can save, update, delete and fetch data from the database.
+popular interfaces of JDBC API:
+Driver interface
+
 2.	What are the core interfaces / classes in JDBC?
+
+Connection interface:
+a session between a Java application and a database. It helps to establish a connection with the database.
+ 
+ Connection interface is a factory of Statement, PreparedStatement, and DatabaseMetaData, i.e.
+ , an object of Connection can be used to get the object of Statement and DatabaseMetaData.
+
+Statement interface
+provides methods to execute queries with the database.
+
+PreparedStatement interface
+a subinterface of Statement. It is used to execute parameterized query.
+value will be set by calling the setter methods of PreparedStatement.
+CallableStatement interface
+Improves performance: The performance of the application will be faster if you use PreparedStatement interface because query is compiled only once.
+
+ResultSet interface:
+object of ResultSet maintains a cursor pointing to a row of a table.
+can make this object to move forward and backward direction by passing either TYPE_SCROLL_INSENSITIVE or TYPE_SCROLL_SENSITIVE in createStatement(int,int)
+
+ResultSetMetaData interface
+ metadata means data about data i.e. we can get further information from the data.
+ ResultSetMetaData interface is useful because it provides methods to get metadata from the ResultSet object.
+ public String getColumnTypeName(int index)
+
+DatabaseMetaData interface
+DatabaseMetaData interface provides methods to get meta data of a database such as database product name, database product version, driver name, name of total number of tables, name of total number of views etc.
+
+RowSet interface
+ - it returns the column type name for the specified index.
+popular classes of JDBC API:
+
+DriverManager class -
+acts as an interface between users and drivers. It keeps track of the drivers that are available and handles establishing a connection between a database and the appropriate driver.
+*before interacting with a Database, it is a mandatory process to register the driver; otherwise, an exception is thrown.
+
+Blob class
+
+Clob class
+
+Types class
+
+
 3.	What is a stored procedure and how would you call it in Java?
+group of one or more pre-compiled SQL statements into a logical unit. It is stored as an object inside the database server.
+procedure in SQL Server always contains a name, parameter lists, and Transact-SQL statements
+to call the stored procedure, you can call execute, executeQuery, or executeUpdate depending on how many ResultSet objects the procedure returns. However, if you are not sure how many ResultSet objects the procedure returns, call execute.
+
 4.	What is the difference between Statement and PreparedStatement?
+
 5.	Steps to executing an SQL query using JDBC?
 
 # AWS
