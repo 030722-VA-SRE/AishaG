@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.revature.exceptions.UserNotFoundException;
+import com.revature.models.Role;
 import com.revature.models.User;
 import com.revature.repositories.TdModelRepository;
 import com.revature.repositories.UserRepository;
@@ -35,23 +36,32 @@ public class UserService {
 		return ur.save(newUser);
 	}
 
-	public List<User> getAll() {
+	public List<User> getAllUsers() {
 		return ur.findAll();
 	}
 	
+	public List<User> getUsersByRole(Role role){
+		return ur.findUsersByRole(role);
+	}
+	
 	@Transactional
-	public User updateUser(int id, User user) {
+	public User updateRoleByID(int id, Role role) {
+		return ur.save(role);
+	}
+	
+	@Transactional
+	public User updateUserById(int id, User user) {
 		return ur.save(user);
 }
 
-	public void deleteUser(int id) throws UserNotFoundException{
+	public void deleteUserById(int id) throws UserNotFoundException{
 		getUserById(id);
 		
 		ur.deleteById(id);		
 	}
 }
 	
-	
+
 	
 //	public User getById(int id) {
 //		return ud.getUserById(id);

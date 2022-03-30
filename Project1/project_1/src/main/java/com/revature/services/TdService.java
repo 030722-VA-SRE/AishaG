@@ -29,7 +29,7 @@ public class TdService{
 		return tr.findById(id).orElseThrow(ItemNotFoundException::new);
 	}
 	@Transactional
-	public TdModels addModels(TdModels newTdModel) {
+	public TdModels addModel(TdModels newTdModel) {
 		return tr.save(newTdModel);
 	}
 	
@@ -38,7 +38,7 @@ public class TdService{
 	}
 	
 	@Transactional
-	public TdModels updateModel(int id, TdModels tdmodel) {
+	public TdModels updateModelById(int id, TdModels tdmodel) {
 		return tr.save(tdmodel);
 	}
 	
@@ -46,15 +46,12 @@ public class TdService{
 		getModelById(id);
 		tr.deleteById(id);
 	}
-	public List<TdModels> getModelByPrice(double price) {
-		return tr.findBy(price);
-	}
-	
-	public List<TdModels> getModelByDescription(String search) {
-			return tDao.getModelByDescription(search);
-	}
 }
-
-////public List<TdModels> getModelsByUploadDate(Date date){
-////return tDao.getModelsByUploadDate(date);
+//	public List<TdModels> getModelByPrice(double price) {
+//		return tr.findBy(price);
+//	}
+//	
+//	public List<TdModels> getModelByDescription(String search) {
+//			return tDao.getModelByDescription(search);
+//	}
 //}

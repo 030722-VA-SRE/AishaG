@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,8 +32,8 @@ public class UserController {
 	}
 	
 	@GetMapping
-	public ResponseEntity<List<User>> getAll() {
-		return new ResponseEntity<>(us.getAll(), HttpStatus.OK);
+	public ResponseEntity<List<User>> getAllUsers() {
+		return new ResponseEntity<>(us.getAllUsers(), HttpStatus.OK);
 	}
 	
 	@GetMapping("/id")
@@ -44,16 +45,28 @@ public class UserController {
 		}
 	}
 	 
-	@PostMapping
+	@PostMapping("/newUser")
 	public ResponseEntity<String> createUser(@RequestBody User user, @RequestHeader String header){
 		User u = us.createUser(user);
 		return new ResponseEntity<>("User " + u.getUsername() + "has been created", HttpStatus.CREATED);
 	}
 	
-	@DeleteMapping("/{id}")
-	public ResponseEntity<User> getByID(@PathVariable("id") int id){
+	@PutMapping("/updateUser/{id}")
+	public ResponseEntity<String> updateUser(@PathVariable("id") int id) {
+		
 		try {
-			us.deleteUser(id);
+			us.updateUserById(id, null);
+			User u = us.getUserById(id);
+			return new ResponseEntity<>("User " + u.getUsername() + "has been updated", HttpStatus.ACCEPTED);
+		} catch (UserNotFoundException e) {
+			return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+		}
+	}
+	
+	@DeleteMapping("/deleteUser/{id}")
+	public ResponseEntity<String> deleteUserById(@PathVariable("id") int id){
+		try {
+			us.deleteUserById(id);
 			return new ResponseEntity<>("User was deleted", HttpStatus.OK);
 		} catch (UserNotFoundException e) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);

@@ -14,37 +14,42 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+
 @Entity
-@Table
+@Table(name="tdmodels")
 public class TdModels {
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
-	@ManyToOne
-	@JoinColumn(nullable = false)
-	private User creator;
+	
 	@Column(nullable = false)
 	private String modelName;
+	
 	@Column(nullable = false)
 	private String description;
-	/*-
-	 * LocalDate object can be serialized to a JSON string by using the following annotation and the
-	 * jackson-datatype-jsr310 dependency.
-	 */
+//	/*-
+//	 * LocalDate object can be serialized to a JSON string by using the following annotation and the
+//	 * jackson-datatype-jsr310 dependency.
+//	 */
 	@Column(nullable = false)
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM-dd-yyyy")
 	private Date currentDate;
 
 	@Column(nullable = false)
 	private double price;
 	
-	public TdModels(int i, String string, String string2, int j) {
-		super();
-	}
+	@ManyToOne
+	@JoinColumn(nullable = false)
+	private User creator;
+	
 	
 	public TdModels() {
 		super();
+	}
+
+	public TdModels(int i, String string, String string2, Date date, double d, User user) {
+		i = id; 
+		date = currentDate;
 	}
 
 	public int getId() {
@@ -90,9 +95,6 @@ public class TdModels {
 		return creator;
 	}
 
-	public void setCreator(User creator) {
-		this.creator = creator;
-	}
 	@Override
 	public int hashCode() {
 		return Objects.hash(currentDate, description, id, modelName, price, creator);
@@ -124,6 +126,7 @@ public class TdModels {
 
 
 }
+
 
 //", modelType=" + modelType + ", dateObtained=" + dateObtained + ", isOwner=" + isOwner
 //+

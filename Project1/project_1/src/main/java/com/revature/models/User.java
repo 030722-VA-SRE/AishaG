@@ -4,6 +4,8 @@ import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -15,12 +17,15 @@ public class User {
 	// fields for that model
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 	@Column(unique = true, nullable = false)
 	private String username;
 	@Column(nullable = false)
 	private String password;
+	
+	@Enumerated(EnumType.STRING)
+	private Role role;
 	
 	public User() {
 		super();
