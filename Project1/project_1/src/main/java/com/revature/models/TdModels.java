@@ -1,6 +1,6 @@
 package com.revature.models;
 
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -11,8 +11,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 
 @Entity
@@ -32,8 +30,8 @@ public class TdModels {
 //	 * LocalDate object can be serialized to a JSON string by using the following annotation and the
 //	 * jackson-datatype-jsr310 dependency.
 //	 */
-	@Column(nullable = false)
-	private Date currentDate;
+	@Column
+	private LocalDate date;
 
 	@Column(nullable = false)
 	private double price;
@@ -47,9 +45,8 @@ public class TdModels {
 		super();
 	}
 
-	public TdModels(int i, String string, String string2, Date date, double d, User user) {
+	public TdModels(int i, String string, String string2, double d, User user) {
 		i = id; 
-		date = currentDate;
 	}
 
 	public int getId() {
@@ -74,15 +71,14 @@ public class TdModels {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-
-	public Date getCurrentDate() {
-		return currentDate;
+	
+	public LocalDate getDate() {
+		return date;
 	}
 
-	public void setCurrentDate(Date date) {
-		this.currentDate = date;
+	public void setDate(LocalDate date) {
+		this.date = date;
 	}
-
 	public double getPrice() {
 		return price;
 	}
@@ -94,10 +90,14 @@ public class TdModels {
 	public User getCreator() {
 		return creator;
 	}
+	
+	public void setCreator(User creator) {
+		this.creator = creator;
+	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(currentDate, description, id, modelName, price, creator);
+		return Objects.hash(creator, date, description, id, modelName, price);
 	}
 
 	//dateObtained, isOwner, modelType
@@ -111,17 +111,18 @@ public class TdModels {
 		if (getClass() != obj.getClass())
 			return false;
 		TdModels other = (TdModels) obj;
-		return Objects.equals(currentDate, other.currentDate)
-				&& Objects.equals(description, other.description) && Objects.equals(modelName, other.modelName)
-				&& Double.doubleToLongBits(price) == Double.doubleToLongBits(other.price) && Objects.equals(creator,  other.creator);
+		return Objects.equals(creator, other.creator) && Objects.equals(date, other.date)
+				&& Objects.equals(description, other.description) && id == other.id
+				&& Objects.equals(modelName, other.modelName)
+				&& Double.doubleToLongBits(price) == Double.doubleToLongBits(other.price);
 	}
 
 
 	
 	@Override
 	public String toString() {
-		return "TdModels [id=" + id + ", modelName=" + modelName +  ", description=" + description
-				+ ", currentDate=" + currentDate +  ", userAssigned=" + creator + ", price=" + price + "]";
+		return "TdModels [id=" + id + ", modelName=" + modelName + ", description=" + description + ", date=" + date
+				+ ", price=" + price + ", creator=" + creator + "]";
 	}
 
 
