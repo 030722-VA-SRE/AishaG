@@ -17,7 +17,7 @@
 //	void isTdModelByID() {
 //		TdModels tdmodel = new TdModels(0, "Teri Teri", "Keeping things coolsince 1994.", null, 80.80, null);
 //		(tr).save(tdmodel);
-//		Boolean actualResult = tr.findById(0);
+//		TdModels actualResult = tr.findById(0);
 //		assertThat(actualResult).isTrue();
 //	}
 //}

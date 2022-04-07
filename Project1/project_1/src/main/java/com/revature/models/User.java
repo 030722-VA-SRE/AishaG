@@ -1,5 +1,6 @@
 package com.revature.models;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -19,20 +20,23 @@ public class User {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
+
 	@Column(unique = true, nullable = false)
 	private String username;
+	
 	@Column(nullable = false)
 	private String password;
 	
+	@Column(name="register_datetime", updatable=false, columnDefinition="timestamp default CURRENT_TIMESTAMP")
+	private LocalDateTime registerDateTime;
+	
 	@Enumerated(EnumType.STRING)
-	private Role role;
+	private UserRole role;
 	
 	public User() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	
-	// setters and getters
 	public int getId() {
 		return id;
 	}
@@ -52,17 +56,32 @@ public class User {
 		this.password = password;
 	}
 
+	public LocalDateTime getRegisterDateTime() {
+		return registerDateTime;
+	}
+
+	public void setRegisterDateTime(LocalDateTime registerDateTime) {
+		this.registerDateTime = registerDateTime;
+	}
+
+	public UserRole getRole() {
+		return role;
+	}
+
+	public void setRole(UserRole userRole) {
+		this.role = userRole;
+	}
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", username=" + username + ", password=" + password + "]";
+		return "User [id=" + id + ", username=" + username + ", password=" + password + ", registerDateTime="
+				+ registerDateTime + ", role=" + role + "]";
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, password, username);
+		return Objects.hash(id, password, registerDateTime, role, username);
 	}
 
-	// equals is inherited from the Object class
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -71,7 +90,11 @@ public class User {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		User other = (User) obj;
-		return id == other.id && Objects.equals(password, other.password) && Objects.equals(username, other.username);
+		if (!(obj instanceof User))
+			return false;
+		User user = (User) obj;
+		return Objects.equals(id, user.id) && Objects.equals(password, user.password)
+				&& Objects.equals(registerDateTime, user.registerDateTime) && role == user.role
+				&& Objects.equals(username, user.username);
 	}
 }

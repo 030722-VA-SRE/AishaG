@@ -1,86 +1,92 @@
 package com.revature.services;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.revature.dto.UserDto;
+import com.revature.exceptions.UserFoundException;
 import com.revature.exceptions.UserNotFoundException;
-import com.revature.models.Role;
 import com.revature.models.User;
-import com.revature.repositories.TdModelRepository;
+import com.revature.models.UserRole;
 import com.revature.repositories.UserRepository;
 
 @Service
 public class UserService {
-	
+
 	private UserRepository ur;
-	private TdModelRepository tr;
-	
+	private UserDto ud;
+	private static final Logger LOG = LoggerFactory.getLogger(UserService.class);
+
 	@Autowired
-	public UserService(UserRepository ur, TdModelRepository tr) {
+	public UserService(UserRepository ur) {
 		super();
 		this.ur = ur;
-		this.tr = tr;
 	}
 	
-	public User getUserById(int id) throws UserNotFoundException {
-		return ur.findById(id).orElseThrow(UserNotFoundException::new);
+	public List<UserDto> getUsers(){
+		List<User> users = ur.findAll();
+		
+		/*-
+		 *  converts the list into a stream in which a map function is applied
+		 *  The map function applies some logic to each object within the List and returns that object
+		 *  the newly UserDto objects are then returned
+		 */
+		return users.stream()
+				.map((user) -> new UserDto(user))
+				.collect(Collectors.toList());
 	}
 	
 	@Transactional
-	public User createUser(User newUser) {
+	public UserDto getUserById(int id) throws UserNotFoundException {
+		User user = ur.findById(id).orElseThrow();
+		// log.info("user x retrieved ...");
 		
+		return new UserDto(user);
+	}
+	
+	@Transactional
+	public User createUser(User newUser) throws UserFoundException{	
+
+		String username = newUser.toString();
+		User returningUser = ur.findUserByUsername(username);
+		if(returningUser != null) {
+		throw new UserFoundException(newUser);
+	}
+		newUser.setRole(UserRole.USER);
 		return ur.save(newUser);
-	}
-
-	public List<User> getAllUsers() {
-		return ur.findAll();
-	}
+}
 	
-	public List<User> getUsersByRole(Role role){
-		return ur.findUsersByRole(role);
-	}
+			
 	
 	@Transactional
-	public User updateRoleByID(int id, Role role) {
-		return ur.save(role);
-	}
-	
-	@Transactional
-	public User updateUserById(int id, User user) {
+	public User updateUserById(User user, int id) throws UserNotFoundException {
+		/*-
+		 *  Logic for update user, ie:
+		 *  	- check that user exists
+		 *  	- partial updates
+		 *  	- etc...
+		 */
+		ur.findById(id);
+		user.setId(id);
 		return ur.save(user);
-}
-
-	public void deleteUserById(int id) throws UserNotFoundException{
+	}
+	
+	@Transactional
+	public void deleteUserById(int id) throws UserNotFoundException {
+		// this tries to retrieve a user by id, if it doesn't exist, throws an exception
 		getUserById(id);
-		
-		ur.deleteById(id);		
+		LOG.info(MDC.get("userToken"));
+		ur.deleteById(id);
 	}
 }
-	
-
-	
-//	public User getById(int id) {
-//		return ud.getUserById(id);
-//	}
-//	
-//	public List<User> getAll() {
-//		// Can add some logic here, ie: if list is empty throw an exception
-//		return ud.getUsers();
-//	}
-//	
-//	public boolean addUser(User user) {
-//		// validation of user object, add business logic
-//		int newId = ud.createUser(user);
-//		
-//		if(newId == -1) {
-//			// throw an exception
-//			return false;
-//		}
-//		
-//		return true;
-//	}
-

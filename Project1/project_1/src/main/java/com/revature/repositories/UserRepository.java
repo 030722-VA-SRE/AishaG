@@ -5,14 +5,19 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.revature.models.Role;
+import com.revature.models.UserRole;
+import com.revature.dto.UserDto;
 import com.revature.models.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer>{
 
-	List<User> findUsersByRole(Role role);
+	User findUserByUsername(String username);
 
-	User save(Role role);
+	List<User> findUsersByRole(UserRole userRole);
+
+	User save(UserRole userRole);
+	
+	User save(UserDto newUser);
 	
 }

@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: ${DB_URL_JAVALIN}
+    url: ${DB_URL}
     username: ${DB_USER}
     password: ${DB_PASS}
   jpa:
@@ -8,3 +8,9 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: validate
+      
+management:
+   endpoints:
+     web:
+       exposure:
+         include: health, metrics, prometheus 
