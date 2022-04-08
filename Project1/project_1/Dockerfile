@@ -4,5 +4,5 @@ COPY pom.xml pom.xml
 RUN mvn package -Dmaven.test.skip
 
 FROM java:8 as runner
-COPY --from=builder target/model-service.jar model-service.jar
-ENTRYPOINT ["java", "-jar", "/model-service.jar"]
+COPY --from=builder target/models-r-us.jar models-r-us.jar
+ENTRYPOINT ["java", "-jar", "/models-r-us.jar"]

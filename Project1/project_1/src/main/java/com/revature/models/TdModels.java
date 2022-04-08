@@ -49,7 +49,7 @@ public class TdModels {
 	private double price;
 	
 	@ManyToOne
-	@JoinColumn(nullable = false)
+	@JoinColumn(nullable = true)
 	private User creator;
 
 }

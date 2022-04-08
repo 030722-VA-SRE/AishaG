@@ -1,7 +1,7 @@
 version: "3.8"
 
 services:
-  logging-demo:
+  model-service:
     build: .
     ports:
       - 8081:8080
@@ -9,7 +9,7 @@ services:
       - DB_URL=jdbc:postgresql://postgres:5432/postgres
       - DB_USER=postgres
       - DB_PASS=pass
-    container_name: model_shop_container
+    container_name: models_r_us_container
     depends_on:
       - postgres
     volumes:
@@ -24,6 +24,7 @@ services:
     container_name: postgres-container
     volumes:
       - db-data:/var/lib/postgresql/data
+  
   promtail:
     image: grafana/promtail:latest
     container_name: promtail_container
@@ -31,11 +32,13 @@ services:
       - ./promtail/promtail-docker-config.yml:/etc/promtail/docker-config.yaml
       - ./logs/application.log:/var/log/application.log
     command: "--config.file=/etc/promtail/docker-config.yaml"
+  
   loki:
     image: grafana/loki:latest
     container_name: loki_container
     ports:
       - 3100:3100
+      
   grafana:
     image: grafana/grafana:latest
     container_name: grafana_container
@@ -45,9 +48,20 @@ services:
       - 3000:3000
     depends_on:
       - loki
+      
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - 9090:9090
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    container_name: models-r-us-prometheus
 
 volumes:
   grafana-data:
     driver: local
+  prometheus-data:
+    driver: local    
   db-data:
     driver: local

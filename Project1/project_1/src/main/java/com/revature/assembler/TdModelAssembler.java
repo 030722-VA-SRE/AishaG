@@ -19,15 +19,10 @@ EntityModel<TDto>> {
 	@Override
 	public EntityModel<TDto> toModel(TDto tdto){
 		
-		try {
 			return EntityModel.of(tdto,
 
 				linkTo(methodOn(TdController.class).getModelById(tdto.getModelId())).withSelfRel(),
 					linkTo(methodOn(TdController.class).getAllModels()).withRel("employees"));
-		} catch (ItemNotFoundException e) {
-			e.printStackTrace();
-		}
-		return null;
 	}
 	
 	public EntityModel<TdModels> toModel(TdModels tdmodel) throws ItemNotFoundException {

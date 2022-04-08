@@ -1,10 +1,13 @@
 package com.revature.controllers;
 
 import java.util.List;
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,8 +21,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.revature.assembler.TdModelAssembler;
+import com.revature.dto.TDto;
 import com.revature.exceptions.ItemNotFoundException;
 import com.revature.models.TdModels;
+import com.revature.models.User;
+import com.revature.repositories.UserRepository;
 import com.revature.services.LoginService;
 import com.revature.services.TdService;
 
@@ -31,12 +37,16 @@ public class TdController {
 	private TdService ts;
 	private LoginService ls;
 	private TdModelAssembler tma;
+	private UserRepository ur;
 	private static final Logger LOG = LoggerFactory.getLogger(UserController.class);
 
 	@Autowired
-	public TdController(TdService ts) {
+	public TdController(TdService ts, LoginService ls, TdModelAssembler tma, UserRepository ur) {
 		super();
 		this.ts = ts;
+		this.ls = ls;
+		this.tma = tma;
+		this.ur = ur;
 	}
 	
 	@GetMapping
@@ -45,31 +55,58 @@ public class TdController {
 	}
 	
 	@GetMapping("/{id}")
-	public EntityModel<TdModels> getModelById(@PathVariable("id") int id) throws ItemNotFoundException{
-		if(id < 0) {
-			throw ItemNotFoundException.createWith(id);
-		}
-		return tma.toModel(ts.getModelById(id));
+	public ResponseEntity<EntityModel<TDto>> getModelById(@PathVariable("id") int id) {
+	
+		TDto td = ts.getModelById(id);
+		
+		EntityModel<TDto> entitymodel =
+		tma.toModel(td);
+		
+		return ResponseEntity
+				.created(entitymodel.getRequiredLink(IanaLinkRelations.SELF).toUri())
+				.body(entitymodel);
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<TdModels> updateModel(@PathVariable("id") int id, @RequestBody TdModels tdmodel) throws ItemNotFoundException {
+	public ResponseEntity<EntityModel<TdModels>> updateModel(@RequestHeader(value = "Authorization", required = false) String token, @PathVariable("id") int id, @RequestBody TdModels updatedModel) throws ItemNotFoundException {
+		ls.verifiedAdmin(token);
 		
-		if(id < -1 || tdmodel == null) {
-			throw ItemNotFoundException.createWith(id);
-		}
-			tdmodel.setModelId(id);
-			return new ResponseEntity<>(ts.updateModel(tdmodel), HttpStatus.ACCEPTED);
+		TdModels tdmodel = ts.updateModel(updatedModel, id);
+		
+		tdmodel.setModelName(updatedModel.getModelName());
+		tdmodel.setDescription(updatedModel.getDescription());
+		tdmodel.setPrice(updatedModel.getPrice());
+//		tdmodel.setCreator(updatedModel.getCreator());
+			
+		EntityModel<TdModels> entitymodel =
+				tma.toModel(updatedModel);
+						
+						ResponseEntity.ok(updatedModel);
+						return ResponseEntity
+				.created(entitymodel.getRequiredLink(IanaLinkRelations.SELF).toUri())
+						.body(entitymodel);
 		}
 	//"Model " + tdmodel.getModelName() + "has been updated"
 	
 	@PostMapping
-	public ResponseEntity<TdModels> addTdModel(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody TdModels newTdModel){
+	public ResponseEntity<EntityModel<TdModels>> addTdModel(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody TdModels newTdModel){
 		
 		ls.verifiedCreator(token);
 		
-		TdModels t = ts.addModel(newTdModel);
-		return new ResponseEntity<>(newTdModel, HttpStatus.CREATED);
+		TdModels tdmodel = ts.addModel(newTdModel);
+//		User creatorId = ls.getUserCredential(token);
+//		tdmodel.setCreator(ls.getUserCredential(token));
+		
+		newTdModel.setCreator(tdmodel.getCreator());
+		
+			EntityModel<TdModels> entitymodel =
+		tma.toModel(tdmodel);
+			
+			return ResponseEntity
+					
+	.created(entitymodel.getRequiredLink(IanaLinkRelations.SELF).toUri())
+		.body(entitymodel);
+		
 	}
 
 	

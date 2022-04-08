@@ -1,13 +1,13 @@
 package com.revature.exceptions;
 
-public class ItemNotFoundException extends Exception {
+public class ItemNotFoundException extends RuntimeException {
 	private int id;
 	
 	public static ItemNotFoundException createWith(int id) {
 		return new ItemNotFoundException(id);
 	}
 	
-	private ItemNotFoundException(int id) {
+	public ItemNotFoundException(int id) {
 		this.id = id;
 	}
 //	private static final long serialVersionUID = 1L;
