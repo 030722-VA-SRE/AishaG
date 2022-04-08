@@ -54,11 +54,7 @@ public class UserController {
 	@GetMapping("/users")
 	public CollectionModel<EntityModel<UserDto>> getAllUsers() {
 		
-//		MDC.put("requestId", UUID.randomUUID().toString());
-//		
-//		ls.verify(token);
-//		
-//		LOG.info("users retrieved");
+
 		List<EntityModel<UserDto>> udto = 
 				us.getUsers().stream()
 				.map(uma::toModel)
@@ -81,25 +77,19 @@ public class UserController {
 				.body(entitymodel);
 				
 	}
-		//		try {
-//			return new ResponseEntity<>(us.getUserById(id), HttpStatus.OK);
-//		} catch (UserNotFoundException e) {
-//			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//		}
+
 	 
 	@PostMapping("/users")
 	public ResponseEntity<EntityModel<User>> newUser(@RequestBody User user){
 	
 		EntityModel<User> entitymodel =
 uma.toModel(us.createUser(user));
-		
+		LOG.trace("A new user has joined!");
 		return ResponseEntity
 
 .created(entitymodel.getRequiredLink(IanaLinkRelations.SELF).toUri())
 		.body(entitymodel);
 		
-//		User u = us.createUser(user);
-//		return new ResponseEntity<>("User " + u.getUsername() + "has been created", HttpStatus.CREATED);
 	}
 
 	
@@ -108,22 +98,14 @@ uma.toModel(us.createUser(user));
 		ls.verifiedAdmin(token);
 		
 		User user = us.updateUserById(updatedUser, id);
-//		.orElseThrow(() -> new UserNotFoundException("User not found for this id :: " + user.getId()));
+
 		
 		user.setUsername(updatedUser.getUsername());
 		user.setPassword(updatedUser.getPassword());
 		user.setRole(updatedUser.getRole());
 		
 
-//			.map(User -> {
-//				user.setName(newuser.getName());
-//				user.setRole(newuser.getRole());
-//				return ur.save(user);
-//			})
-//			.orElseGet(() -> {
-//				newuser.setId(id);
-//				return us.updateUserById(newuser);
-//			});
+
 			EntityModel<User> entitymodel =
 	uma.toModel(updatedUser);
 			
@@ -131,24 +113,17 @@ uma.toModel(us.createUser(user));
 			return ResponseEntity
 	.created(entitymodel.getRequiredLink(IanaLinkRelations.SELF).toUri())
 			.body(entitymodel);
-//		try {
-//			User u = us.updateUserById(id, newuser);
-//			return new ResponseEntity<>("User " + u.getUsername() + "has been updated", HttpStatus.ACCEPTED);
-//		} catch (UserNotFoundException e) {
-//			return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
-		}
+	}
 	
 	@DeleteMapping("/users/{id}")
 	public ResponseEntity<String> deleteUserById(@RequestHeader(value = "Authorization", required = false) String token, @PathVariable("id") int id){
 		ls.verifiedAdmin(token);
 		
 			us.deleteUserById(id);
-			
+			LOG.info("user has been deleted, by admin");
 			return ResponseEntity.noContent().build();
-	}
-			//("User was deleted", HttpStatus.OK);
 			
-		 
-			//return new ResponseEntity<>("User of id " + id + "was not found", HttpStatus.NOT_FOUND);
+	}
+
 		
 }

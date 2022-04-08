@@ -1,11 +1,15 @@
 package com.revature.controllers;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.HttpStatus;
@@ -22,9 +26,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.revature.assembler.TdModelAssembler;
 import com.revature.dto.TDto;
+import com.revature.dto.UserDto;
 import com.revature.exceptions.ItemNotFoundException;
 import com.revature.models.TdModels;
-import com.revature.models.User;
 import com.revature.repositories.UserRepository;
 import com.revature.services.LoginService;
 import com.revature.services.TdService;
@@ -37,7 +41,7 @@ public class TdController {
 	private TdService ts;
 	private LoginService ls;
 	private TdModelAssembler tma;
-	private UserRepository ur;
+
 	private static final Logger LOG = LoggerFactory.getLogger(UserController.class);
 
 	@Autowired
@@ -46,12 +50,19 @@ public class TdController {
 		this.ts = ts;
 		this.ls = ls;
 		this.tma = tma;
-		this.ur = ur;
+
 	}
 	
 	@GetMapping
-	public ResponseEntity<List<TdModels>> getAllModels() {
-		return new ResponseEntity<>(ts.getAllModels(), HttpStatus.OK);
+	public CollectionModel<EntityModel<TDto>> getAllModels() {
+		List<EntityModel<TDto>> tdto = 
+				ts.getAllModels().stream()
+				.map(tma::toModel)
+			.collect(Collectors.toList());
+		
+		return CollectionModel.of(tdto, 
+		linkTo(methodOn(TdController.class).getAllModels()).withSelfRel());
+
 	}
 	
 	@GetMapping("/{id}")
@@ -76,17 +87,18 @@ public class TdController {
 		tdmodel.setModelName(updatedModel.getModelName());
 		tdmodel.setDescription(updatedModel.getDescription());
 		tdmodel.setPrice(updatedModel.getPrice());
-//		tdmodel.setCreator(updatedModel.getCreator());
+
 			
 		EntityModel<TdModels> entitymodel =
 				tma.toModel(updatedModel);
 						
 						ResponseEntity.ok(updatedModel);
+						
 						return ResponseEntity
 				.created(entitymodel.getRequiredLink(IanaLinkRelations.SELF).toUri())
 						.body(entitymodel);
 		}
-	//"Model " + tdmodel.getModelName() + "has been updated"
+
 	
 	@PostMapping
 	public ResponseEntity<EntityModel<TdModels>> addTdModel(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody TdModels newTdModel){
@@ -94,10 +106,8 @@ public class TdController {
 		ls.verifiedCreator(token);
 		
 		TdModels tdmodel = ts.addModel(newTdModel);
-//		User creatorId = ls.getUserCredential(token);
-//		tdmodel.setCreator(ls.getUserCredential(token));
-		
-		newTdModel.setCreator(tdmodel.getCreator());
+
+		LOG.trace("a new model has been added! Ensure it is properly setup please.");	
 		
 			EntityModel<TdModels> entitymodel =
 		tma.toModel(tdmodel);
@@ -117,9 +127,10 @@ public class TdController {
 		ls.verifiedCreator(token);
 		
 		if(id <= 0) {
-			throw ItemNotFoundException.createWith(id);
+			throw new ItemNotFoundException(id);
 		}
 			ts.deleteModelById(id);
+			LOG.info("model has been deleted, please verify token of previous verfiedCreator token for more details.");
 			return new ResponseEntity<>("Model was deleted", HttpStatus.OK);
 	}
 }

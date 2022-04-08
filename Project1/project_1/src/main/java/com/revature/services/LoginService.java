@@ -72,7 +72,7 @@ public class LoginService {
 				throw new AuthorizationException("Unable to verify token of value: " + splitToken[0] + ", " + splitToken[1]);
 		}
 		
-		LOG.info("token verified successfully");
+		LOG.info("token(creator/admin) verified successfully");
 		MDC.put("userId", principal.getId());
 	}
 	
@@ -81,12 +81,15 @@ public class LoginService {
 		
 		verifyCreator(token);
 		
-		LOG.info("users retrieved");
+		LOG.info("users of type creator or admin retrieved");
 	}
 
 	public void verifiedAdmin(String token) {
 		MDC.put("requestId", UUID.randomUUID().toString());
+		
 		verify(token);
+		
+		LOG.info("users of type creator or admin retrieved");
 	}
 	
 	public User getUserCredential(String token) {

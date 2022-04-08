@@ -19,13 +19,13 @@ import com.revature.repositories.UserRepository;
 @Service
 public class TdService{
 
-	private TdModelRepository tr; //= new TdPostgres();
-	private UserRepository ur;
+	private TdModelRepository tr;
+
 	
 	@Autowired
 	public TdService(TdModelRepository tr, UserRepository ur) {
 		super();
-		this.ur = ur;
+
 		this.tr = tr;
 	}
 	
@@ -43,11 +43,13 @@ public class TdService{
 		return tr.save(newTdModel);
 	}
 	
-	public List<TdModels> getAllModels() {
-//		List<TdModels> tdlist = tr.findAll();
-//		return tdlist; 
+	public List<TDto> getAllModels() {
 		
-		return tr.findAll();
+		List<TdModels> models = tr.findAll();
+
+		return models.stream()
+				.map((tdmodel) -> new TDto(tdmodel))
+				.collect(Collectors.toList());
 	}
 	
 	@Transactional
@@ -64,7 +66,7 @@ public class TdService{
 				updatedmodel.setPrice(tdmodel.getPrice());
 			}
 			if(id < -1 || tdmodel == null) {
-				throw ItemNotFoundException.createWith(id);
+				throw new ItemNotFoundException(id);
 			}
 			tdmodel.setModelId(id);
 		
@@ -77,13 +79,6 @@ public class TdService{
 		TdModels tdmodel = tr.getById(id);
 		tr.delete(tdmodel);
 		//refactor to allow only admins to delete or for user to delete
+	
+		}
 	}
-//
-//	public List<TdModels> getModelByPrice(double price) {
-//		return tr.findBy(price);
-//	}
-//
-//	public List<TdModels> getModelByDescription(String search) {
-//			return tr.findBy(search);
-//	}
-}

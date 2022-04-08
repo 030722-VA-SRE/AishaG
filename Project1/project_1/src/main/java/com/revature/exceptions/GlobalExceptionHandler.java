@@ -26,32 +26,31 @@ public class GlobalExceptionHandler {
 		if (ex instanceof UserNotFoundException) {
 			HttpStatus status = HttpStatus.NOT_FOUND;
 			UserNotFoundException unfe = (UserNotFoundException) ex;
-			
+			LOG.trace("UserNotFoundException called");
 			return handleUserNotFoundException(unfe, headers, status, request);
 		} else if (ex instanceof UserFoundException) {
 			HttpStatus status = HttpStatus.BAD_REQUEST;
 			UserFoundException ufe = (UserFoundException) ex;
-			
+			LOG.trace("UserFoundException called");
 			return handleUserFoundException(ufe, headers, status, request);
 		} else if (ex instanceof ItemNotFoundException){
 			HttpStatus status = HttpStatus.NOT_FOUND;
 			ItemNotFoundException infe = (ItemNotFoundException) ex;
-			
+			LOG.trace("ItemNotFoundException called");
 			return handleItemNotFoundException(infe, headers, status, request);
 		} else if (ex instanceof AuthorizationException) {
 			HttpStatus status = HttpStatus.BAD_REQUEST;
 			AuthorizationException ae = (AuthorizationException) ex;
-			
+			LOG.trace("AuthorizationException called");
 			return handleAuthorizationException(ae, headers, status, request);
-
 		} else if(ex instanceof AuthenticationException) {
 			HttpStatus status = HttpStatus.FORBIDDEN;
 			AuthenticationException aue = (AuthenticationException) ex;
-			
+			LOG.trace("AuthenticationException called");
 			return handleAuthenticationException(aue, headers, status, request);
 		} else {
 			HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-			
+			LOG.trace("InternalServerError called");
 			return handleExceptionInternal(ex, null, headers, status, request);
 		}
 	}

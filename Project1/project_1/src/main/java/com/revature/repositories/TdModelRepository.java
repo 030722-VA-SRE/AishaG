@@ -10,6 +10,4 @@ import com.revature.models.TdModels;
 @Repository
 public interface TdModelRepository extends JpaRepository<TdModels, Integer> {
 
-//	List<TdModels> findBy(double price);
-//	List<TdModels> findBy(String search);
 }
