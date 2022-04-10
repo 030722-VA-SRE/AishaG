@@ -56,19 +56,10 @@ public class TdService{
 	public TdModels updateModel(TdModels tdmodel, int id) throws ItemNotFoundException{
 		TdModels updatedmodel = tr.getById(id);
 		
-			if (tdmodel.getModelName() != null && !tdmodel.getModelName().equals(updatedmodel.getModelName())) {
-				updatedmodel.setModelName(tdmodel.getModelName());
-			}
-			if (tdmodel.getDescription() != null && !tdmodel.getDescription().equals(updatedmodel.getDescription())) {
-				updatedmodel.setDescription(tdmodel.getDescription());
-			}
-			if (tdmodel.getPrice() != -1 && tdmodel.getPrice() != (updatedmodel.getPrice())) {
-				updatedmodel.setPrice(tdmodel.getPrice());
-			}
 			if(id < -1 || tdmodel == null) {
 				throw new ItemNotFoundException(id);
 			}
-			tdmodel.setModelId(id);
+			updatedmodel.setModelId(id);
 		
 		return tr.save(updatedmodel);
 		
