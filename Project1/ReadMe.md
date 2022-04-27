@@ -6,16 +6,16 @@ Migrated and containerized a RESTful Javalin web application to Spring Boot depl
 
 ## Technologies Used
 
--Spring Boot 4.0.0
--Maven 2.6.4
--Java 1.8
--JUnit
--Mockito
--Docker
--Promtail
--Loki
--Grafana
--Prometheus
+Spring Boot 4.0.0
+Maven 2.6.4
+Java 1.8
+JUnit
+Mockito
+Docker
+Promtail
+Loki
+Grafana
+Prometheus
 
 ## Features
 
