@@ -5,17 +5,17 @@
 Migrated and containerized a RESTful Javalin web application to Spring Boot deployed using Docker-Compose. Application logs are exported using Promtail to Loki and monitored through a Grafana dashboard. The application allows users to create, update, and delete 3d models. Future updates will include a shop where models can be bought and downloaded. 
 
 ## Technologies Used
-
-*Spring Boot 4.0.0
-*Maven 2.6.4
-*Java 1.8
-*JUnit
-*Mockito
-*Docker
-*Promtail
-*Loki
-*Grafana
-*Prometheus
+Technologies
+* Spring Boot 4.0.0
+* Maven 2.6.4
+* Java 1.8
+* JUnit
+* Mockito
+* Docker
+* Promtail
+* Loki
+* Grafana
+* Prometheus
 
 ## Features
 
